@@ -12,6 +12,10 @@ clang++ -Xclang -load -Xclang ./libPass.so Conway-Game-Of-Life/life.cpp -O2 -c -
 clang++ life.o log.cpp Conway-Game-Of-Life/sim.cpp -lsfml-graphics -lsfml-system -lsfml-window -O2  
 
 ./a.out > input.txt
+
+clang++ count.cpp -o b.out
+
+./b.out
 ````
 
 
