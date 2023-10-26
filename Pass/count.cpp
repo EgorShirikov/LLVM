@@ -5,8 +5,8 @@
 
 int main() {
     std::map<std::string, int> counts;
-        std::string inputFile = "input.txt";
-    std::string outputFile = "output.txt";
+    std::string inputFile = "input.txt";
+    std::string outputFile = "statisctic.txt";
     std::ifstream input(inputFile);
     if (!input) {
         std::cerr << "error while openning inStream" << std::endl;
