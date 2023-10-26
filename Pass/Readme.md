@@ -1,4 +1,4 @@
-# This is example of LLVM pass that collect statistics of IR instructions int runtime.  
+# This is example of LLVM pass that collect statistics of IR instructions in runtime.  
 
 ## Usage:  
 
