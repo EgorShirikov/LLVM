@@ -27,13 +27,13 @@ namespace {
             IRBuilder<> builder(Ctx);
             Type *retType = Type::getVoidTy(Ctx);
 
-            // Prepare routeLogget function
+            // Prepare routeLogger function
             ArrayRef<Type *> routePararamTypes = {builder.getInt8Ty()->getPointerTo(),
                                                   builder.getInt8Ty()->getPointerTo()};
-            FunctionType *funcStartLogFuncType =
+            FunctionType *routeLoggerFuncType =
                     FunctionType::get(retType, routePararamTypes, false);
             FunctionCallee routeLogFunc = F.getParent()->getOrInsertFunction(
-                    "routeLogger", funcStartLogFuncType);
+                    "routeLogger", routeLoggerFuncType);
 
             // Insert routeLogger
             for (auto &B : F) {
