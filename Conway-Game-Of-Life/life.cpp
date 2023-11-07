@@ -1,12 +1,11 @@
-#include <limits.h>
 #include "sim.h"
 
-unsigned int calcNeighbours(const unsigned int *prevGen, unsigned int y, unsigned int x) {
+extern "C" unsigned int calcNeighbours(const unsigned int *prevGen, unsigned int y, unsigned int x) {
     unsigned aliveNeighbours = 0;
     for (unsigned newY = y - 1; newY <= y + 1; newY++) {
         for (unsigned newX = x - 1; newX <= x + 1; newX++) {
-            if (newX != UINT_MAX && newX < SIM_X_SIZE
-                && newY != UINT_MAX && newY < SIM_Y_SIZE
+            if (newX != 4294967295 && newX < SIM_X_SIZE
+                && newY != 4294967295 && newY < SIM_Y_SIZE
                 && !(newX == x && newY == y)) {
                 aliveNeighbours += prevGen[newY * SIM_X_SIZE + newX];
             }
@@ -15,7 +14,7 @@ unsigned int calcNeighbours(const unsigned int *prevGen, unsigned int y, unsigne
     return aliveNeighbours;
 }
 
-void calcGen(const unsigned *prevGen, unsigned *nextGen) {
+extern "C" void calcGen(const unsigned *prevGen, unsigned *nextGen) {
     for (unsigned y = 0; y < SIM_Y_SIZE; y++) {
         for (unsigned x = 0; x < SIM_X_SIZE; x++) {
             unsigned int aliveNeighbours = calcNeighbours(prevGen, y, x);
@@ -28,7 +27,7 @@ void calcGen(const unsigned *prevGen, unsigned *nextGen) {
     }
 }
 
-void drawGen(const unsigned *gen) {
+extern "C" void drawGen(const unsigned *gen) {
     for (unsigned y = 0; y < SIM_Y_SIZE; y++) {
         for (unsigned x = 0; x < SIM_X_SIZE; x++) {
             simSetPixel(x, y, 0xFF000000 + 0xFF00 * gen[y * SIM_X_SIZE + x]);
@@ -37,7 +36,7 @@ void drawGen(const unsigned *gen) {
     simFlush();
 }
 
-void initGen(unsigned *gen) {
+extern "C" void initGen(unsigned *gen) {
     for (unsigned y = 0; y < SIM_Y_SIZE; y++) {
         for (unsigned x = 0; x < SIM_X_SIZE; x++) {
             gen[y * SIM_X_SIZE + x] = simRand();

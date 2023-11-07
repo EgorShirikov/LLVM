@@ -6,10 +6,17 @@
 #define SIM_Y_SIZE (HEIGHT / CELL_SIZE)
 #define SIM_DATA_ADR (SIM_X_SIZE * SIM_Y_SIZE)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-extern void simSetPixel(unsigned x, unsigned y, unsigned argb);
-extern void simFlush();
-extern int simRand();
-extern void simInit();
-extern bool simEvent();
-extern void simExit();
+    extern void simSetPixel(unsigned x, unsigned y, unsigned argb);
+    extern void simFlush();
+    extern int simRand();
+    extern void simInit();
+    extern bool simEvent();
+    extern void simExit();
+
+#ifdef __cplusplus
+}
+#endif
