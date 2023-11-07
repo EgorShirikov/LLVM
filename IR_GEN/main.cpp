@@ -89,8 +89,6 @@ void declareFunctions(Module& module) {
     FunctionType* lifetimeEndType = FunctionType::get(VoidType, lifetimeEndParams, false);
     FunctionCallee lifeTimeEnd = module.getOrInsertFunction("llvm.lifetime.end.p0i8", lifetimeEndType);
 
-
-
 }
 
 void createCalcNeighbours(Module& module) {
@@ -145,7 +143,6 @@ void createCalcNeighbours(Module& module) {
     builder.SetInsertPoint(basicBlock24);
     PHINode* value25 = builder.CreatePHI(builder.getInt32Ty(), 0);
     PHINode* value26 = builder.CreatePHI(builder.getInt32Ty(), 0);
-
     Value* value27 = builder.CreateICmpUGT(value25, ConstantInt::get(builder.getInt32Ty(), 79, true));
     Value* value28 = builder.CreateOr(value17, value27);
     Value* value29 = builder.CreateICmpEQ(value25, value2);
@@ -163,7 +160,6 @@ void createCalcNeighbours(Module& module) {
 
     builder.SetInsertPoint(basicBlock38);
     PHINode* value39 = builder.CreatePHI(builder.getInt32Ty(), 0);
-
     Value* value40 = builder.CreateAdd(value25, ConstantInt::get(builder.getInt32Ty(), 1, true));
     Value* value41 = builder.CreateICmpUGT(value40, value9);
     builder.CreateCondBr(value41, basicBlock20, basicBlock24);
@@ -204,12 +200,10 @@ void createCalcGen(Module& module) {
     BasicBlock* basicBlock7 = BasicBlock::Create(context, "", calcGen);
     BasicBlock* basicBlock10 = BasicBlock::Create(context, "", calcGen);
 
-
     builder.SetInsertPoint(basicBlock2);
     builder.CreateBr(basicBlock3);
 
     builder.SetInsertPoint(basicBlock3);
-    //TODO
     PHINode* value4 = builder.CreatePHI(builder.getInt64Ty(), 1);
     Value* value5 = builder.CreateNUWMul(value4, ConstantInt::get(builder.getInt64Ty(), 80, true));
     builder.CreateBr(basicBlock10);
@@ -223,7 +217,6 @@ void createCalcGen(Module& module) {
     builder.CreateCondBr(value9, basicBlock6, basicBlock3);
 
     builder.SetInsertPoint(basicBlock10);
-    //TODO
     PHINode* value11 = builder.CreatePHI(builder.getInt64Ty(), 1);
     Value* value12 = builder.CreateTrunc(value11, builder.getInt32Ty());
     Value* value13 = builder.CreateTrunc(value4, builder.getInt32Ty());
@@ -278,7 +271,6 @@ void createDrawGen(Module& module) {
     builder.CreateBr(basicBlock2);
 
     builder.SetInsertPoint(basicBlock2);
-    //TODO
     PHINode* value3 = builder.CreatePHI(builder.getInt64Ty(), 1);
     Value* value4 = builder.CreateNUWMul(value3, ConstantInt::get(builder.getInt64Ty(), 80, false));
     builder.CreateBr(basicBlock9);
@@ -304,13 +296,8 @@ void createDrawGen(Module& module) {
     Value* value15 = builder.CreateAdd(value14,ConstantInt::get(builder.getInt32Ty(), -16777216, true));
     Value* value16 = builder.CreateTrunc(value10, builder.getInt32Ty());
     Value* value17 = builder.CreateTrunc(value3, builder.getInt32Ty());
-    Type *Int32Type = Type::getInt32Ty(context);
-    Type *VoidType = Type::getVoidTy(context);
-    ArrayRef<Type*> simSetPixelParams = {Int32Type, Int32Type, Int32Type};
-    FunctionType* simSetPixelType = FunctionType::get(VoidType, simSetPixelParams, false);
-    FunctionCallee simSetPixel = module.getOrInsertFunction("simSetPixel", simSetPixelType);
     ArrayRef<Value*> simSetPixelArgs = {value16, value17, value15};
-    builder.CreateCall(simSetPixel, simSetPixelArgs);
+    builder.CreateCall(module.getFunction("simSetPixel"), simSetPixelArgs);
     Value* value18 = builder.CreateNUWAdd(value10, ConstantInt::get(builder.getInt64Ty(), 1, true));
     Value* value19 = builder.CreateICmpEQ(value18, ConstantInt::get(builder.getInt64Ty(), 80, true));
     builder.CreateCondBr(value19, basicBlock6, basicBlock9);
@@ -354,11 +341,7 @@ void createInitGen(Module& module) {
 
     builder.SetInsertPoint(basicBlock9);
     PHINode* value10 = builder.CreatePHI(builder.getInt64Ty(), 1);
-    ArrayRef<Type*> simRandParams = {};
-    Type *Int32Type = Type::getInt32Ty(context);
-    FunctionType* simRandType = FunctionType::get(Int32Type, simRandParams, false);
-    FunctionCallee simRand = module.getOrInsertFunction("simRand", simRandType);
-    Value* value11 = builder.CreateCall(simRand);
+    Value* value11 = builder.CreateCall(module.getFunction("simRand"));
     Value* value12 = builder.CreateNUWAdd(value10, value4);
     Value* value13 = builder.CreateInBoundsGEP(builder.getInt32Ty(), initGen->getArg(0), value12);
     builder.CreateStore(value11, value13);
@@ -378,11 +361,6 @@ void createMainFunc(Module& module) {
     IRBuilder<> builder(context);
     Function* mainFunc = module.getFunction("main");
 
-    Type *VoidType = Type::getVoidTy(context);
-    Type *BoolType = Type::getInt1Ty(context);
-    Type *Int64Type = Type::getInt64Ty(context);
-    Type *Int8PtType = Type::getInt8PtrTy(context);
-
     BasicBlock* basicBlock0 = BasicBlock::Create(context, "", mainFunc);
     BasicBlock* basicBlock7 = BasicBlock::Create(context, "", mainFunc);
     BasicBlock* basicBlock9 = BasicBlock::Create(context, "", mainFunc);
@@ -396,35 +374,17 @@ void createMainFunc(Module& module) {
                                           PointerType::get(Type::getInt8Ty(context), 0));
     Value* value4 = builder.CreateBitCast(value2,
                                           PointerType::get(Type::getInt8Ty(context), 0));
-    // Вызов llvm.lifetime.start.p0i8
-    ArrayRef<Type*> lifetimeStartParams = {Int64Type, Int8PtType};
-    FunctionType* lifetimeStartType = FunctionType::get(VoidType, lifetimeStartParams, false);
-    FunctionCallee lifeTimeStart = module.getOrInsertFunction("llvm.lifetime.start.p0i8", lifetimeStartType);
-    ArrayRef<Value*> lifetimeArgs= {ConstantInt::get(builder.getInt64Ty(), 19200, true), value3};
-    ArrayRef<Value*> lifetimeStartArgs = {ConstantInt::get(builder.getInt64Ty(), 19200, true), value4};
-    builder.CreateCall(lifeTimeStart, lifetimeArgs);
-    builder.CreateCall(lifeTimeStart, lifetimeStartArgs);
-    //
+    builder.CreateCall(module.getFunction("llvm.lifetime.start.p0i8"),
+                       {ConstantInt::get(builder.getInt64Ty(), 19200, true), value3});
+    builder.CreateCall(module.getFunction("llvm.lifetime.start.p0i8"),
+                       {ConstantInt::get(builder.getInt64Ty(), 19200, true), value4});
     Value* zero = ConstantInt::get(Type::getInt64Ty(context), 0);
     Value* indices[] = {zero, zero};
     Value* value5 = builder.CreateInBoundsGEP(value2, indices);
-    ArrayRef<Type*> simInitParams = {};
-    FunctionType* simInitType = FunctionType::get(VoidType, simInitParams, false);
-    FunctionCallee simInit = module.getOrInsertFunction("simInit", simInitType);
-    builder.CreateCall(simInit);
-    //initGen
-    ArrayRef<Type*> initGenParams = {builder.getInt32Ty()->getPointerTo()};
-    FunctionType* initGenType = FunctionType::get(VoidType, initGenParams, false);
-    FunctionCallee initGen = module.getOrInsertFunction("initGen", initGenType);
-    builder.CreateCall(initGen, {value5});
-    //
-    //simEvent
-    ArrayRef<Type*> simEventParams = {};
-    FunctionType* simEventType = FunctionType::get(BoolType, simEventParams, false);
-    FunctionCallee simEvent = module.getOrInsertFunction("simEvent", simEventType);
-    Value* value6 = builder.CreateCall(simEvent);
+    builder.CreateCall(module.getFunction("simInit"));
+    builder.CreateCall(module.getFunction("initGen"), {value5});
+    Value* value6 = builder.CreateCall(module.getFunction("simEvent"));
     builder.CreateCondBr(value6, basicBlock7, basicBlock13);
-    //
 
     builder.SetInsertPoint(basicBlock7);
     Value* value8 = builder.CreateInBoundsGEP(value1, indices);
@@ -433,31 +393,16 @@ void createMainFunc(Module& module) {
     builder.SetInsertPoint(basicBlock9);
     PHINode* value10 = builder.CreatePHI(Type::getInt32PtrTy(context), 0);
     PHINode* value11 = builder.CreatePHI(Type::getInt32PtrTy(context), 0);
-    ArrayRef<Type*> calcGenParams = {builder.getInt32Ty()->getPointerTo(),
-                                     builder.getInt32Ty()->getPointerTo()};
-    FunctionType* calcGenType = FunctionType::get(VoidType, calcGenParams, false);
-    FunctionCallee calcGen = module.getOrInsertFunction("calcGen", calcGenType);
-    builder.CreateCall(calcGen, {value10, value10});
-    ArrayRef<Type*> drawGenParams = {builder.getInt32Ty()->getPointerTo()};
-    FunctionType* drawGenType = FunctionType::get(VoidType, drawGenParams, false);
-    FunctionCallee drawGen = module.getOrInsertFunction("drawGen", drawGenType);
-    builder.CreateCall(drawGen, {value11});
-    Value* value12 = builder.CreateCall(simEvent);
+    builder.CreateCall(module.getFunction("calcGen"), {value11, value10});
+    builder.CreateCall(module.getFunction("drawGen"), {value11});
+    Value* value12 = builder.CreateCall(module.getFunction("simEvent"));
     builder.CreateCondBr(value12, basicBlock9, basicBlock13);
 
     builder.SetInsertPoint(basicBlock13);
-    //simExit
-    ArrayRef<Type*> simExitParams = {};
-    FunctionType* simExitType = FunctionType::get(VoidType, simExitParams, false);
-    FunctionCallee simExit = module.getOrInsertFunction("simExit", simExitType);
-    builder.CreateCall(simExit);
-    //lifetimeEnd
-    ArrayRef<Type*> lifetimeEndParams = {Int64Type, Int8PtType};
-    FunctionType* lifetimeEndType = FunctionType::get(VoidType, lifetimeEndParams, false);
-    FunctionCallee lifetimeEnd = module.getOrInsertFunction("llvm.lifetime.end.p0i8", lifetimeEndType);
-    builder.CreateCall(lifetimeEnd,
+    builder.CreateCall(module.getFunction("simExit"));
+    builder.CreateCall(module.getFunction("llvm.lifetime.end.p0i8"),
                        {ConstantInt::get(builder.getInt64Ty(), 19200, true), value4});
-    builder.CreateCall(lifetimeEnd,
+    builder.CreateCall(module.getFunction("llvm.lifetime.end.p0i8"),
                        {ConstantInt::get(builder.getInt64Ty(), 19200, true), value3});
     builder.CreateRet(ConstantInt::get(builder.getInt32Ty(), 0, true));
 
@@ -468,8 +413,6 @@ void createMainFunc(Module& module) {
     value11->addIncoming(value5,basicBlock7);
 
 }
-
-
 
 int main() {
     LLVMContext context;
