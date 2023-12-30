@@ -219,11 +219,11 @@ public:
 
 int main() {
   antlr4::ANTLRInputStream inputStream(std::cin);
-  MyLanguageLexer lexer(&inputStream);
+  mylangLexer lexer(&inputStream);
   antlr4::CommonTokenStream tokenStream(&lexer);
-  MyLanguageParser parser(&tokenStream);
-  MyLanguageParser::ProgramContext *tree = parser.program();
-  MyVisitor visitor;
+  mylangParser parser(&tokenStream);
+  mylangParser::ProgramContext *tree = parser.program();
+  mylangVisitor visitor;
   visitor.visitProgram(tree);
   return 0;
 }
