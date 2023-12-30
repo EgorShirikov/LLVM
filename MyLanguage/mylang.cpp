@@ -213,6 +213,7 @@ public:
     visit(ctx->children[13]);
     builder.CreateBr(exitBB);
     builder.SetInsertPoint(exitBB);
+    return{};
   }
 }
 
