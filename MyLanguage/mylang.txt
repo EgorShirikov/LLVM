@@ -1,0 +1,32 @@
+begin_simulation {
+    array gen1[SIM_DATA_ADR];
+    array gen2[SIM_DATA_ADR];
+    pointer nextGen = gen1;
+    pointer prevGen = gen2;
+    initiate_simulation();
+
+    for (integer y = 0; y < SIM_DATA_ADR; y++)
+        prevGen.set(y) = generate_random_number();
+
+    while (check_simulation_event()) {
+        for (integer y = 0; y < SIM_DATA_ADR; y++) {
+            integer x = y % SIM_X_SIZE;
+            integer newY = y / SIM_X_SIZE;
+            integer aliveNeighbours := 0;
+
+            for (integer i = newY - 1; i <= newY + 1; i++) {
+                for (integer j = x - 1; j <= x + 1; j++) {
+                    aliveNeighbours += prevGen.get(i * SIM_X_SIZE + j);
+                }
+            }
+        }
+        for (integer y := 0; y < SIM_DATA_ADR; y++)
+            set_simulation_pixel(y, 0xFF000000 + 0xFF00 * prevGen.get(y));
+
+        flush_simulation();
+        pointer tmp = prevGen;
+        prevGen = nextGen;
+        nextGen = tmp;
+    }
+    exit_simulation();
+}
